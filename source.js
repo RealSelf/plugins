@@ -21,9 +21,18 @@
 					'font-family': 'Menlo, Monaco, Consolas, "Courier New", monospace'
 				};
 
-				this.source.$textarea = $('<textarea />');
+				// This line here is a fix so that we can use ng-model binding for the code view
+				// for the redactor class. It basically grabs the original textarea field and binds
+				// it to the text area of the code view in the redactor so that the ng-model bind will
+				// be bound to the code view as well as the rich content editor view.
+				
+				this.source.$textarea = $(this.core.box()[0].getElementsByTagName('textarea')[0].cloneNode());
 				this.source.$textarea.css(style).hide();
-
+				// These attributes below need to removed in order for this fix to work with the .twig integrations
+				// of the HTML WYSIWYG editor we use as  copying over all of the attributes will break forms (multiple
+				// tags will have the same name in a form)
+				this.source.$textarea[0].removeAttribute("name");
+				this.source.$textarea[0].removeAttribute("id");
 				if (this.opts.type === 'textarea')
 				{
 					this.core.box().append(this.source.$textarea);
